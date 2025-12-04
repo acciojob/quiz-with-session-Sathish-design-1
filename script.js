@@ -50,7 +50,7 @@ function renderQuestions() {
 
       // Restore previously selected answer
       if (userAnswers[i] === choice) {
-        choiceElement.checked = true;
+        choiceElement.setAttribute("checked", "true");
       }
 
       // Save answer to sessionStorage when user selects
