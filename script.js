@@ -83,9 +83,9 @@ document.getElementById("submit").addEventListener("click", function () {
         }
     }
 
-    // Show score
-    document.getElementById("score").innerText = `Your score is out of 5: ${score}`;
+    // FIX: Cypress expected text
+    document.getElementById("score").innerText = `Your score is ${score} out of 5`;
 
-    // Save score in local storage
+    // Save for Cypress test
     localStorage.setItem("score", score);
 });
