@@ -27,65 +27,65 @@ const questions = [
   },
 ];
 
-// Load user answers from session storage or initialize as an empty object
+// Load saved answers from session storage
 let userAnswers = JSON.parse(sessionStorage.getItem("progress")) || {};
 
-// Function to render questions
 function renderQuestions() {
-  const questionsElement = document.getElementById("questions");
-  questionsElement.innerHTML = ""; // Clear previous questions
+    const questionsElement = document.getElementById("questions");
+    questionsElement.innerHTML = "";
 
-  for (let i = 0; i < questions.length; i++) {
-    const question = questions[i];
-    const questionElement = document.createElement("div");
-    const questionText = document.createTextNode(question.question);
-    questionElement.appendChild(questionText);
+    for (let i = 0; i < questions.length; i++) {
+        const question = questions[i];
 
-    for (let j = 0; j < question.choices.length; j++) {
-      const choice = question.choices[j];
-      const choiceElement = document.createElement("input");
-      choiceElement.setAttribute("type", "radio");
-      choiceElement.setAttribute("name", `question-${i}`);
-      choiceElement.setAttribute("value", choice);
+        const questionElement = document.createElement("div");
+        const questionText = document.createTextNode(question.question);
+        questionElement.appendChild(questionText);
 
-      // Restore previously selected answer
-      if (userAnswers[i] === choice) {
-        choiceElement.setAttribute("checked", "true");
-      }
+        for (let j = 0; j < question.choices.length; j++) {
+            const choice = question.choices[j];
 
-      // Save answer to sessionStorage when user selects
-      choiceElement.addEventListener("change", function () {
-        userAnswers[i] = choice;
-        sessionStorage.setItem("progress", JSON.stringify(userAnswers));
-      });
+            const choiceElement = document.createElement("input");
+            choiceElement.setAttribute("type", "radio");
+            choiceElement.setAttribute("name", `question-${i}`);
+            choiceElement.setAttribute("value", choice);
 
-      const choiceText = document.createTextNode(choice);
-      questionElement.appendChild(choiceElement);
-      questionElement.appendChild(choiceText);
-      questionElement.appendChild(document.createElement("br")); // Add line break for better spacing
+            // Restore saved answer (Cypress requires attribute checked="true")
+            if (userAnswers[i] === choice) {
+                choiceElement.setAttribute("checked", "true");
+            }
+
+            // Save selected answer
+            choiceElement.addEventListener("change", function () {
+                userAnswers[i] = choice;
+                sessionStorage.setItem("progress", JSON.stringify(userAnswers));
+            });
+
+            const choiceText = document.createTextNode(choice);
+
+            questionElement.appendChild(choiceElement);
+            questionElement.appendChild(choiceText);
+            questionElement.appendChild(document.createElement("br"));
+        }
+
+        questionsElement.appendChild(questionElement);
     }
-
-    questionsElement.appendChild(questionElement);
-  }
 }
 
-// Call function to render questions on page load
 renderQuestions();
 
-// Event listener for submit button
+// Submit button handler — calculate score
 document.getElementById("submit").addEventListener("click", function () {
-  let score = 0;
+    let score = 0;
 
-  // Calculate score based on user answers
-  for (let i = 0; i < questions.length; i++) {
-    if (userAnswers[i] === questions[i].answer) {
-      score++;
+    for (let i = 0; i < questions.length; i++) {
+        if (userAnswers[i] === questions[i].answer) {
+            score++;
+        }
     }
-  }
 
-  // Display score to the user
-  document.getElementById("score").innerText = `Your score is: ${score} out of ${questions.length}`;
+    // Show score
+    document.getElementById("score").innerText = `Your score is out of 5: ${score}`;
 
-  // Store score in local storage
-  localStorage.setItem("score", score);
+    // Save score in local storage
+    localStorage.setItem("score", score);
 });
