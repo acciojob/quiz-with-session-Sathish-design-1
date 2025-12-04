@@ -30,9 +30,10 @@ const questions = [
 // Load saved answers from session storage
 let userAnswers = JSON.parse(sessionStorage.getItem("progress")) || {};
 
+// Function to render questions
 function renderQuestions() {
     const questionsElement = document.getElementById("questions");
-    questionsElement.innerHTML = "";
+    questionsElement.innerHTML = ""; // Clear previous questions
 
     for (let i = 0; i < questions.length; i++) {
         const question = questions[i];
@@ -51,7 +52,7 @@ function renderQuestions() {
 
             // Restore saved answer (Cypress requires attribute checked="true")
             if (userAnswers[i] === choice) {
-                choiceElement.setAttribute("checked", "true");
+                choiceElement.checked = true; // Use .checked instead of setAttribute
             }
 
             // Save selected answer
@@ -61,7 +62,6 @@ function renderQuestions() {
             });
 
             const choiceText = document.createTextNode(choice);
-
             questionElement.appendChild(choiceElement);
             questionElement.appendChild(choiceText);
             questionElement.appendChild(document.createElement("br"));
@@ -71,6 +71,7 @@ function renderQuestions() {
     }
 }
 
+// Call the function to render questions on page load
 renderQuestions();
 
 // Submit button handler — calculate score
@@ -83,9 +84,9 @@ document.getElementById("submit").addEventListener("click", function () {
         }
     }
 
-    // FIX: Cypress expected text
+    // Display score in the expected format for Cypress tests
     document.getElementById("score").innerText = `Your score is ${score} out of 5`;
 
-    // Save for Cypress test
+    // Save score for Cypress test
     localStorage.setItem("score", score);
 });
